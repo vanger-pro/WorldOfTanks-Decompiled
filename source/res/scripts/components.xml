@@ -1,0 +1,17 @@
+<components.xml>
+  <StaticComponents></StaticComponents>
+  <DynamicComponents>
+    <OwnVehicle></OwnVehicle>
+    <InAoEZone></InAoEZone>
+    <DogTagComponent></DogTagComponent>
+    <DogTagsInfo></DogTagsInfo>
+    <LabelComponent></LabelComponent>
+    <GunMarkerComponent></GunMarkerComponent>
+    <ExtendedSPG></ExtendedSPG>
+    <AtGunpoint></AtGunpoint>
+    <EnemyShotPredictorController></EnemyShotPredictorController>
+    <MapsTrainingStorageComponent></MapsTrainingStorageComponent>
+    <BattleHintsComponent></BattleHintsComponent>
+    <Fire></Fire>
+  </DynamicComponents>
+</components.xml>
