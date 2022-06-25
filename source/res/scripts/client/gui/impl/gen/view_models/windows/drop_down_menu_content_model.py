@@ -13,10 +13,6 @@ class DropDownMenuContentModel(ViewModel):
     def dropDownList(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getDropDownListType():
-        return ListModel
-
     def getListItemRenderer(self):
         return self._getString(1)
 

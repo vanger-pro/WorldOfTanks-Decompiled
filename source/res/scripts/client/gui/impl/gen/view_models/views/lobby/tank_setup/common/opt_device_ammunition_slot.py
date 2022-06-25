@@ -13,10 +13,6 @@ class OptDeviceAmmunitionSlot(BaseAmmunitionSlot):
     def specializations(self):
         return self._getViewModel(11)
 
-    @staticmethod
-    def getSpecializationsType():
-        return SpecializationsModel
-
     def getActiveSpecsMask(self):
         return self._getNumber(12)
 

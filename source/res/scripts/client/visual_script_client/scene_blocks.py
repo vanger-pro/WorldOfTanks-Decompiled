@@ -20,7 +20,7 @@ class GetSpaceId(Block, ArenaMeta):
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT, ASPECT.HANGAR]
+        return [ASPECT.CLIENT]
 
 
 class GetSpaceName(Block, ArenaMeta):
@@ -40,4 +40,4 @@ class GetSpaceName(Block, ArenaMeta):
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT, ASPECT.HANGAR]
+        return [ASPECT.CLIENT]

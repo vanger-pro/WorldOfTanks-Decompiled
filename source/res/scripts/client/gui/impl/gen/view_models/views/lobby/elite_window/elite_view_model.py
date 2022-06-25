@@ -13,10 +13,6 @@ class EliteViewModel(ViewModel):
     def vehicleInfo(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getVehicleInfoType():
-        return VehicleInfoModel
-
     def getIsPostProgressionExists(self):
         return self._getBool(1)
 

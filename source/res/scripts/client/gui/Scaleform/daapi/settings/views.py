@@ -91,7 +91,7 @@ class VIEW_ALIAS(COMMON_VIEW_ALIAS):
     VEHICLE_INFO_WINDOW = 'vehicleInfoWindow'
     MODULE_INFO_WINDOW = 'moduleInfoWindow'
     BOOSTER_INFO_WINDOW = 'boosterInfoWindow'
-    GOODIE_INFO_WINDOW = 'goodieInfoWindow'
+    DEMOUNT_KIT_INFO_WINDOW = 'demountKitInfoWindow'
     VEHICLE_SELL_DIALOG = 'vehicleSellDialog'
     SETTINGS_WINDOW = 'settingsWindow'
     BATTLE_RESULTS = 'battleResults'

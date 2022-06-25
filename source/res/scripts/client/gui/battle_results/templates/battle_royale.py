@@ -69,8 +69,7 @@ _BATTLE_PASS_VO_META = base.PropertyMeta((('currentLevel', 1, 'currentLevel'),
  ('battlePassComplete', 0, 'battlePassComplete'),
  ('chapterID', 0, 'chapterID'),
  ('pointsTotal', 0, 'pointsTotal'),
- ('basePointsDiff', 0, 'basePointsDiff'),
- ('pointsAux', 0, 'pointsAux')))
+ ('basePointsDiff', 0, 'basePointsDiff')))
 _BATTLE_PASS_VO_META.bind(battle_royale.BattlePassBlock)
 _REWARDS_VO_META = base.PropertyMeta((('achievements', [], 'achievements'),
  ('bonuses', [], 'bonuses'),

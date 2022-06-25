@@ -22,10 +22,6 @@ class RankedQualificationRewardsBattleBonusModel(ViewModel):
     def setBonuses(self, value):
         self._setArray(1, value)
 
-    @staticmethod
-    def getBonusesType():
-        return RewardItemModel
-
     def _initialize(self):
         super(RankedQualificationRewardsBattleBonusModel, self)._initialize()
         self._addNumberProperty('battlesCount', 0)

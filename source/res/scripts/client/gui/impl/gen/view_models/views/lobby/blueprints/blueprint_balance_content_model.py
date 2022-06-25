@@ -13,10 +13,6 @@ class BlueprintBalanceContentModel(CommonBalanceContentModel):
     def intelligenceBalance(self):
         return self._getViewModel(1)
 
-    @staticmethod
-    def getIntelligenceBalanceType():
-        return FragmentItemModel
-
     def getAllianceName(self):
         return self._getString(2)
 

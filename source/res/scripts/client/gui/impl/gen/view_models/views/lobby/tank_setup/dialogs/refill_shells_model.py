@@ -14,17 +14,9 @@ class RefillShellsModel(DialogWithExchange):
     def dealPanel(self):
         return self._getViewModel(15)
 
-    @staticmethod
-    def getDealPanelType():
-        return DealPanelModel
-
     @property
     def mainContent(self):
         return self._getViewModel(16)
-
-    @staticmethod
-    def getMainContentType():
-        return MultipleItemsContentModel
 
     def getWithRollback(self):
         return self._getBool(17)

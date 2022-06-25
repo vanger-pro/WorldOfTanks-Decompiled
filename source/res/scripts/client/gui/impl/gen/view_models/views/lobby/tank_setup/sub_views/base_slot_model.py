@@ -13,10 +13,6 @@ class BaseSlotModel(ViewModel):
     def price(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getPriceType():
-        return PriceModel
-
     def getName(self):
         return self._getString(1)
 

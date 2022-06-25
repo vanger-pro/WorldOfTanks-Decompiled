@@ -16,10 +16,6 @@ class PrebattleAmmunitionPanelModel(AmmunitionPanelModel):
     def setSectionGroups(self, value):
         self._setArray(6, value)
 
-    @staticmethod
-    def getSectionGroupsType():
-        return PrebattleAmmunitionItemsGroup
-
     def _initialize(self):
         super(PrebattleAmmunitionPanelModel, self)._initialize()
         self._addArrayProperty('sectionGroups', Array())

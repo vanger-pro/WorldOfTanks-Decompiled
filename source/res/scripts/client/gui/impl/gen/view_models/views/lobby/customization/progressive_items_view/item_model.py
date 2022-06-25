@@ -14,10 +14,6 @@ class ItemModel(ViewModel):
     def eachLevelInfo(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getEachLevelInfoType():
-        return ItemLevelInfoModel
-
     def getMaxLevel(self):
         return self._getNumber(1)
 

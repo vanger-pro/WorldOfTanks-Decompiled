@@ -15,10 +15,6 @@ class CrewBooksLackViewModel(ViewModel):
     def noBooksList(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getNoBooksListType():
-        return ListModel
-
     def getFlagIcon(self):
         return self._getResource(1)
 

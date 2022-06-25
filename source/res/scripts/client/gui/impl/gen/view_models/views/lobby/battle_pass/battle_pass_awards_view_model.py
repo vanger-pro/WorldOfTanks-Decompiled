@@ -24,17 +24,9 @@ class BattlePassAwardsViewModel(CommonViewModel):
     def mainRewards(self):
         return self._getViewModel(4)
 
-    @staticmethod
-    def getMainRewardsType():
-        return RewardItemModel
-
     @property
     def additionalRewards(self):
         return self._getViewModel(5)
-
-    @staticmethod
-    def getAdditionalRewardsType():
-        return RewardItemModel
 
     def getChapterID(self):
         return self._getNumber(6)
@@ -77,10 +69,6 @@ class BattlePassAwardsViewModel(CommonViewModel):
 
     def setWideRewardsIDs(self, value):
         self._setArray(12, value)
-
-    @staticmethod
-    def getWideRewardsIDsType():
-        return int
 
     def getIsExtra(self):
         return self._getBool(13)

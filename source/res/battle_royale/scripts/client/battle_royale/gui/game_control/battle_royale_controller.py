@@ -1,7 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: battle_royale/scripts/client/battle_royale/gui/game_control/battle_royale_controller.py
 import logging
-from functools import partial
 import typing
 import json
 import BigWorld
@@ -112,7 +111,6 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         self.__profStatSelectBattlesTypeInited = False
         self.__profTechSelectBattlesTypeInited = False
         self.__switchingFromBR = False
-        self.__callbackID = None
         return
 
     def init(self):
@@ -132,9 +130,6 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         self.onUpdated.clear()
         self.onPrimeTimeStatusUpdated.clear()
         self.clearNotification()
-        if self.__callbackID is not None:
-            BigWorld.cancelCallback(self.__callbackID)
-            self.__callbackID = None
         super(BattleRoyaleController, self).fini()
         return
 
@@ -328,7 +323,7 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
             _logger.error('Prebattle dispatcher is not defined')
             return
         else:
-            self.__callbackID = BigWorld.callback(0, partial(self.__doSelectRandomPrb, dispatcher))
+            self.__doSelectRandomPrb(dispatcher)
             return
 
     def getPlayerLevelInfo(self):
@@ -506,9 +501,7 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
 
     @process
     def __doSelectRandomPrb(self, dispatcher):
-        self.__callbackID = None
         yield dispatcher.doSelectAction(PrbAction(PREBATTLE_ACTION_NAME.RANDOM))
-        return
 
     @process
     def fightClick(self):

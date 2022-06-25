@@ -13,10 +13,6 @@ class IntroViewModel(ViewModel):
     def vehicleInfo(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getVehicleInfoType():
-        return VehicleInfoModel
-
     def getTopRewardPlayersCount(self):
         return self._getNumber(1)
 

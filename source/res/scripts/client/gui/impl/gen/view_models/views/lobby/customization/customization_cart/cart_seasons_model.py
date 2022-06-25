@@ -13,25 +13,13 @@ class CartSeasonsModel(ViewModel):
     def winter(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getWinterType():
-        return CartSeasonModel
-
     @property
     def summer(self):
         return self._getViewModel(1)
 
-    @staticmethod
-    def getSummerType():
-        return CartSeasonModel
-
     @property
     def desert(self):
         return self._getViewModel(2)
-
-    @staticmethod
-    def getDesertType():
-        return CartSeasonModel
 
     def _initialize(self):
         super(CartSeasonsModel, self)._initialize()

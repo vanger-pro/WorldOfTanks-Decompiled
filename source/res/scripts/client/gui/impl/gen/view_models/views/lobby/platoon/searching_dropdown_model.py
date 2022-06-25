@@ -13,10 +13,6 @@ class SearchingDropdownModel(ViewModel):
     def btnCancelSearch(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getBtnCancelSearchType():
-        return ButtonModel
-
     def getBackgroundImage(self):
         return self._getString(1)
 

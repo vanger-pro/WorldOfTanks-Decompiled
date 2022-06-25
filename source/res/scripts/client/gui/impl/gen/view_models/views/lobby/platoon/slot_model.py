@@ -15,10 +15,6 @@ class SlotModel(ViewModel):
     def player(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getPlayerType():
-        return PlayerModel
-
     def getSlotId(self):
         return self._getNumber(1)
 
@@ -78,10 +74,6 @@ class SlotModel(ViewModel):
 
     def setSlotLabelElements(self, value):
         self._setArray(10, value)
-
-    @staticmethod
-    def getSlotLabelElementsType():
-        return SlotLabelElementModel
 
     def _initialize(self):
         super(SlotModel, self)._initialize()

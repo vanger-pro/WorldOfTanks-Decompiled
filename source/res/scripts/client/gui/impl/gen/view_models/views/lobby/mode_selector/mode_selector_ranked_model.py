@@ -13,10 +13,6 @@ class ModeSelectorRankedModel(ModeSelectorNormalCardModel):
     def widget(self):
         return self._getViewModel(20)
 
-    @staticmethod
-    def getWidgetType():
-        return ModeSelectorRankedWidgetModel
-
     def _initialize(self):
         super(ModeSelectorRankedModel, self)._initialize()
         self._addViewModelProperty('widget', ModeSelectorRankedWidgetModel())

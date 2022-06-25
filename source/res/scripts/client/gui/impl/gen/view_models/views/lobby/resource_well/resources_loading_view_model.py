@@ -22,10 +22,6 @@ class ResourcesLoadingViewModel(ViewModel):
     def vehicleCounter(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getVehicleCounterType():
-        return VehicleCounterModel
-
     def getProgressionState(self):
         return ProgressionState(self._getString(1))
 
@@ -43,10 +39,6 @@ class ResourcesLoadingViewModel(ViewModel):
 
     def setResourcesTabs(self, value):
         self._setArray(3, value)
-
-    @staticmethod
-    def getResourcesTabsType():
-        return ResourcesTabModel
 
     def getIsLoadingError(self):
         return self._getBool(4)

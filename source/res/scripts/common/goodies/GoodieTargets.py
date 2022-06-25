@@ -87,7 +87,3 @@ class EpicPostBattle(PostBattle):
 
 class DemountOptionalDevice(HangarTarget):
     pass
-
-
-class DropSkill(GoodieTarget):
-    pass

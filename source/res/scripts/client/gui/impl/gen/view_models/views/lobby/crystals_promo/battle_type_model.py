@@ -15,10 +15,6 @@ class BattleTypeModel(ViewModel):
     def conditions(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getConditionsType():
-        return ConditionModel
-
     def getTitle(self):
         return self._getResource(1)
 

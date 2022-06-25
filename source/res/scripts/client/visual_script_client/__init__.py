@@ -1,21 +1,11 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/visual_script_client/__init__.py
-from constants import IS_UE_EDITOR, IS_VS_EDITOR
+from constants import IS_EDITOR, IS_VS_EDITOR
 from visual_script.misc import ASPECT
 from visual_script.registrar import VSBlockRegistrar
 from contexts.sound_notifications_context import SoundNotificationsContext
 from contexts.cgf_context import CGFGameObjectContext
-g_blockRegistrar = VSBlockRegistrar(ASPECT.CLIENT, ASPECT.HANGAR)
-
-def registerContext():
-    g_blockRegistrar.regContext(SoundNotificationsContext)
-    g_blockRegistrar.regContext(CGFGameObjectContext)
-
-
-def registerForGeneral():
-    g_blockRegistrar.regContext(SoundNotificationsContext)
-    g_blockRegistrar.regContext(CGFGameObjectContext)
-    registerContext()
+if not IS_EDITOR:
     import arena_blocks
     import vehicle_blocks
     import scene_blocks
@@ -29,6 +19,8 @@ def registerForGeneral():
     import hangar_blocks
     import battle_hud_block
     import cgf_blocks
+g_blockRegistrar = VSBlockRegistrar(ASPECT.CLIENT)
+if not IS_EDITOR:
     g_blockRegistrar.regBlocksFromModule(event_platform_blocks)
     g_blockRegistrar.regBlocksFromModule(arena_blocks)
     g_blockRegistrar.regBlocksFromModule(vehicle_blocks)
@@ -41,30 +33,12 @@ def registerForGeneral():
     g_blockRegistrar.regBlocksFromModule(game_settings_blocks)
     g_blockRegistrar.regBlocksFromModule(battle_hud_block)
     g_blockRegistrar.regBlocksFromModule(cgf_blocks)
-    g_blockRegistrar.regBlocksFromModule(hangar_blocks)
-    g_blockRegistrar.regBlocksFromModule(hint_blocks)
-
-
 g_blockRegistrar.regContext(SoundNotificationsContext)
 g_blockRegistrar.regContext(CGFGameObjectContext)
-
-def registerForUEEditor():
-    registerContext()
-
-
-def registerForVSEditor():
-    registerForGeneral()
-
-
-def registerForClient():
-    registerForGeneral()
+if not IS_VS_EDITOR:
     from visual_script_client import client_perk_blocks
     g_blockRegistrar.regBlocksFromModule(client_perk_blocks)
-
-
-if IS_UE_EDITOR:
-    registerForUEEditor()
-elif IS_VS_EDITOR:
-    registerForVSEditor()
-else:
-    registerForClient()
+g_hangarBlockRegistrar = VSBlockRegistrar(ASPECT.HANGAR)
+if not IS_EDITOR:
+    g_hangarBlockRegistrar.regBlocksFromModule(hangar_blocks)
+    g_hangarBlockRegistrar.regBlocksFromModule(hint_blocks)

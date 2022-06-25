@@ -14,10 +14,6 @@ class CartSeasonModel(ViewModel):
     def items(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getItemsType():
-        return CartSlotModel
-
     def getName(self):
         return self._getString(1)
 

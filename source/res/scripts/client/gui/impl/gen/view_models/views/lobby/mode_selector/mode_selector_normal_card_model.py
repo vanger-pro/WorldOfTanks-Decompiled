@@ -22,10 +22,6 @@ class ModeSelectorNormalCardModel(ModeSelectorCardModel):
     def widget(self):
         return self._getViewModel(10)
 
-    @staticmethod
-    def getWidgetType():
-        return ModeSelectorBaseWidgetModel
-
     def getName(self):
         return self._getString(11)
 
@@ -73,10 +69,6 @@ class ModeSelectorNormalCardModel(ModeSelectorCardModel):
 
     def setRewardList(self, value):
         self._setArray(18, value)
-
-    @staticmethod
-    def getRewardListType():
-        return ModeSelectorRewardModel
 
     def getBattlePassState(self):
         return BattlePassState(self._getNumber(19))

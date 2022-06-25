@@ -23,17 +23,9 @@ class GameModeModel(ViewModel):
     def tableRows(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getTableRowsType():
-        return GameModeRowsModel
-
     @property
     def cards(self):
         return self._getViewModel(1)
-
-    @staticmethod
-    def getCardsType():
-        return GameModeCardModel
 
     def getTitle(self):
         return self._getString(2)

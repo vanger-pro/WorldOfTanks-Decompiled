@@ -16,19 +16,11 @@ class ResearchStepsMainContent(ViewModel):
     def modificationsBonuses(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getModificationsBonusesType():
-        return BonusesModel
-
     def getStepsResearch(self):
         return self._getArray(1)
 
     def setStepsResearch(self, value):
         self._setArray(1, value)
-
-    @staticmethod
-    def getStepsResearchType():
-        return ShortStepModel
 
     def getUnlockModifications(self):
         return self._getArray(2)
@@ -36,19 +28,11 @@ class ResearchStepsMainContent(ViewModel):
     def setUnlockModifications(self, value):
         self._setArray(2, value)
 
-    @staticmethod
-    def getUnlockModificationsType():
-        return ShortModificationModel
-
     def getUnlockFeatures(self):
         return self._getArray(3)
 
     def setUnlockFeatures(self, value):
         self._setArray(3, value)
-
-    @staticmethod
-    def getUnlockFeaturesType():
-        return ShortModificationModel
 
     def _initialize(self):
         super(ResearchStepsMainContent, self)._initialize()

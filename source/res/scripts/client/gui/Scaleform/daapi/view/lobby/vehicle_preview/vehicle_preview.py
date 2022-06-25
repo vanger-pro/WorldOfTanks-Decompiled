@@ -30,6 +30,7 @@ from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_PREVIEW import VEHICLE_PREVIEW
 from gui.Scaleform.locale.VEH_COMPARE import VEH_COMPARE
+from gui.game_control.dragon_boat_controller import DBOAT_REWARDS
 from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
 from gui.impl import backport
 from gui.impl.gen import R
@@ -46,7 +47,7 @@ from helpers import dependency
 from helpers.i18n import makeString as _ms
 from preview_selectable_logic import PreviewSelectableLogic
 from skeletons.account_helpers.settings_core import ISettingsCore
-from skeletons.gui.game_control import IHeroTankController, IVehicleComparisonBasket
+from skeletons.gui.game_control import IHeroTankController, IMapsTrainingController, IVehicleComparisonBasket
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from tutorial.control.context import GLOBAL_FLAG
@@ -74,7 +75,8 @@ _BACK_BTN_LABELS = {VIEW_ALIAS.LOBBY_HANGAR: 'hangar',
  PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_AWARDS_VIEW_ALIAS: 'personalAwards',
  VIEW_ALIAS.WOT_PLUS_VEHICLE_PREVIEW: None,
  VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW: None,
- VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW: 'resourceWell'}
+ VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW: 'resourceWell',
+ DBOAT_REWARDS: 'rewards'}
 _TABS_DATA = ({'id': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE,
   'label': VEHICLE_PREVIEW.INFOPANEL_TAB_BROWSE_NAME,
   'linkage': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE}, {'id': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE,
@@ -140,6 +142,7 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
     __heroTanksControl = dependency.descriptor(IHeroTankController)
     __hangarSpace = dependency.descriptor(IHangarSpace)
     __settingsCore = dependency.descriptor(ISettingsCore)
+    __mapsTrainingController = dependency.descriptor(IMapsTrainingController)
 
     def __init__(self, ctx=None):
         self.__ctx = ctx
@@ -176,6 +179,7 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
          VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW,
          VIEW_ALIAS.RESOURCE_WELL_HERO_VEHICLE_PREVIEW)
         self._heroInteractive = not (self._itemsPack or self.__offers or self.__topPanelData or self._backAlias in notInteractive)
+        self._heroInteractive = self._heroInteractive and ctx.get('heroInteractive', True)
         self.__haveCustomCrew = any((item.type == ItemPackType.CREW_CUSTOM for item in self._itemsPack)) if self._itemsPack else False
         self.__hangarVehicleCD = ctx.get('hangarVehicleCD')
         self.__previewAppearance = ctx.get('previewAppearance')
@@ -243,6 +247,8 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self.__hangarSpace.onSpaceCreate -= self.__onHangarCreateOrRefresh
         self.__hangarSpace.setVehicleSelectable(self.__keepVehicleSelectionEnabled)
         self.removeListener(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, self.handleSelectedEntityUpdated)
+        if self.__mapsTrainingController.isMapsTrainingPrbActive:
+            self._needToResetAppearance = self._needToResetAppearance and self.__mapsTrainingController.getSelectedVehicle() <= 0
         if self._needToResetAppearance:
             g_currentPreviewVehicle.selectNoVehicle()
             g_currentPreviewVehicle.resetAppearance()
@@ -464,7 +470,7 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
             backBtnLabel = _BACK_BTN_LABELS[self._backAlias]
             if not backBtnLabel:
                 return None
-            return VEHICLE_PREVIEW.getBackBtnLabel(_BACK_BTN_LABELS[self._backAlias])
+            return VEHICLE_PREVIEW.getBackBtnLabel(backBtnLabel)
         else:
             return VEHICLE_PREVIEW.HEADER_BACKBTN_DESCRLABEL_HANGAR
 

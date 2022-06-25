@@ -80,8 +80,6 @@ def init(scriptConfig, engineConfig, userPreferences, loadingScreenGUI=None):
         g_bootcamp.replayCallbackSubscribe()
         import nation_change
         nation_change.init()
-        import battle_modifiers
-        battle_modifiers.init()
         import items
         items.init(True, None if not constants.IS_DEVELOPMENT else {})
         import battle_results
@@ -455,10 +453,7 @@ _PYTHON_MACROS = {'p': 'BigWorld.player()',
  'setHero': 'from HeroTank import debugReloadHero; debugReloadHero',
  'switchNation': 'import Account; Account.g_accountRepository.inventory.switchNation()',
  'plugins': 'from gui.Scaleform.daapi.view.battle.shared.markers2d.plugins import Ping3DPositionPlugin',
- 'setPlatoonTanks': 'from gui.development.dev_platoon_tank_models import debugSetPlatoonTanks; debugSetPlatoonTanks',
- 'epicSelectRewards': 'from gui.development import showFrontlineRewardSelection; showFrontlineRewardSelection()',
- 'epicNewLevel': 'from gui.shared.event_dispatcher import showNewLevelWindow; showNewLevelWindow()',
- 'reloadCGF': 'import CGF; CGF.hotReload(BigWorld.player().hangarSpace.spaceID)'}
+ 'setPlatoonTanks': 'from gui.development.dev_platoon_tank_models import debugSetPlatoonTanks; debugSetPlatoonTanks'}
 
 def expandMacros(line):
     import re

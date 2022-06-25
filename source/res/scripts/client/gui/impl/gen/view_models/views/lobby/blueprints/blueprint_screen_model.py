@@ -16,10 +16,6 @@ class BlueprintScreenModel(ViewModel):
     def conversionMaxCost(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getConversionMaxCostType():
-        return BlueprintPriceContentModel
-
     def getVehicleName(self):
         return self._getString(1)
 

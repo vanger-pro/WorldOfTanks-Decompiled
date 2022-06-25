@@ -14,17 +14,9 @@ class SinglePriceViewModel(ViewModel):
     def cost(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getCostType():
-        return CurrencyViewModel
-
     @property
     def tooltip(self):
         return self._getViewModel(1)
-
-    @staticmethod
-    def getTooltipType():
-        return DialogTemplateGenericTooltipViewModel
 
     def getText(self):
         return self._getString(2)

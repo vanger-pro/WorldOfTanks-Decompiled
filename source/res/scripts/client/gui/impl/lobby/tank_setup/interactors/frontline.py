@@ -10,11 +10,7 @@ from gui.shared.event_dispatcher import showBattleAbilitiesConfirmDialog
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
 
 class FrontlineInteractor(BaseEquipmentInteractor):
-    __slots__ = ('_checkboxState',)
-
-    def __init__(self, vehItem):
-        super(FrontlineInteractor, self).__init__(vehItem)
-        self._checkboxState = False
+    __slots__ = ()
 
     def getName(self):
         return TankSetupConstants.BATTLE_ABILITIES
@@ -45,7 +41,7 @@ class FrontlineInteractor(BaseEquipmentInteractor):
 
     @process
     def confirm(self, callback, skipDialog=False):
-        action = ActionsFactory.getAction(ActionsFactory.INSTALL_BATTLE_ABILITIES, self.getItem(), self._checkboxState)
+        action = ActionsFactory.getAction(ActionsFactory.INSTALL_BATTLE_ABILITIES, self.getItem())
         if action is not None:
             result = yield action.doAction()
             callback(result)
@@ -53,15 +49,8 @@ class FrontlineInteractor(BaseEquipmentInteractor):
             callback(None)
         return
 
-    def setCheckboxState(self, state):
-        self._checkboxState = state
-
     @async
     def showExitConfirmDialog(self):
-        vehicle = self.getItem()
-        if not self._checkboxState:
-            setupItems = self.getChangedList()
-        else:
-            setupItems = vehicle.battleAbilities.layout.getStorage
-        result = yield await(showBattleAbilitiesConfirmDialog(items=setupItems, withInstall=bool(setupItems), vehicleType=vehicle.type, applyForAllVehiclesByType=self._checkboxState))
+        changedItems = self.getChangedList()
+        result = yield await(showBattleAbilitiesConfirmDialog(items=changedItems, withInstall=bool(changedItems)))
         raise AsyncReturn(result)

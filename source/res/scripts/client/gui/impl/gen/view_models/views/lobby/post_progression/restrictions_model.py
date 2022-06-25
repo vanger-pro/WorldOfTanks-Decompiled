@@ -15,10 +15,6 @@ class RestrictionsModel(ViewModel):
     def setAllowedLevels(self, value):
         self._setArray(0, value)
 
-    @staticmethod
-    def getAllowedLevelsType():
-        return int
-
     def _initialize(self):
         super(RestrictionsModel, self)._initialize()
         self._addArrayProperty('allowedLevels', Array())

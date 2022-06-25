@@ -13,10 +13,6 @@ class RespawnAmmunitionPanelViewModel(AmmunitionPanelViewModel):
     def vehicleInfo(self):
         return self._getViewModel(6)
 
-    @staticmethod
-    def getVehicleInfoType():
-        return VehicleInfoModel
-
     def _initialize(self):
         super(RespawnAmmunitionPanelViewModel, self)._initialize()
         self._addViewModelProperty('vehicleInfo', VehicleInfoModel())

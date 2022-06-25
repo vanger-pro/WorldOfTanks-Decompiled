@@ -11,6 +11,10 @@ from nations import NAMES as NATION_NAMES
 
 class BCTechTree(TechTree):
 
+    def _populate(self):
+        super(BCTechTree, self)._populate()
+        self.__populateAfter()
+
     def invalidateBlueprintMode(self, isEnabled):
         pass
 
@@ -31,7 +35,6 @@ class BCTechTree(TechTree):
     def getNationTreeData(self, nationName):
         data = super(BCTechTree, self).getNationTreeData(NATION_NAMES[g_bootcamp.nation])
         dataNodes = data.get('nodes', None)
-        nationData = g_bootcamp.getNationData()
         if dataNodes is not None:
             dataNodes = [ node for node in dataNodes if not NODE_STATE.isPremium(node['state']) ]
             for node in dataNodes:
@@ -40,13 +43,9 @@ class BCTechTree(TechTree):
                 nodeState = node['state']
                 if not NODE_STATE.inInventory(nodeState):
                     isUnlocked = NODE_STATE.isUnlocked(nodeState)
-                    isVehicleSecond = node['id'] == nationData['vehicle_second']
-                    if not (isVehicleSecond and isUnlocked):
-                        node['state'] = NODE_STATE_FLAGS.LOCKED
+                    node['state'] = NODE_STATE_FLAGS.LOCKED
                     if isUnlocked:
                         node['state'] |= NODE_STATE_FLAGS.PURCHASE_DISABLED
-                    if isVehicleSecond:
-                        node['state'] |= NODE_STATE_FLAGS.NEXT_2_UNLOCK
                     if NODE_STATE.isAnnouncement(nodeState):
                         node['state'] |= NODE_STATE_FLAGS.ANNOUNCEMENT
                         node['state'] |= NODE_STATE_FLAGS.NOT_CLICKABLE
@@ -56,10 +55,6 @@ class BCTechTree(TechTree):
 
     def setupContextHints(self, hintID):
         pass
-
-    def _populate(self):
-        super(BCTechTree, self)._populate()
-        self.__populateAfter()
 
     def __populateAfter(self):
         self.as_hideNationsBarS(True)

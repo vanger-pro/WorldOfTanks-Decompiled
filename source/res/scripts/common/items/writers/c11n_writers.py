@@ -772,10 +772,8 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
             dependenciesSection = findOrCreate(isection, 'dependencies')
             changed |= resizeSection(dependenciesSection, camouflagesCount, lambda id: 'camouflage')
             sectionIndex = 0
-            for camoId in sorted(collection.keys()):
-                items = collection[camoId]
+            for camoId, items in collection.iteritems():
                 camoSection = dependenciesSection.child(sectionIndex)
-                changed |= resizeSection(camoSection, 1, lambda id: 'id')
                 changed |= _xml.rewriteInt(camoSection, 'id', camoId)
                 for childKey, idsList in items.iteritems():
                     childName = '{}'.format(lower(CustomizationTypeNames[childKey]))

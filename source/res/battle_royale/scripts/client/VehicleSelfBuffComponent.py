@@ -4,7 +4,6 @@ from collections import namedtuple
 import BigWorld
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, FEEDBACK_EVENT_ID
 from battle_royale.gui.constants import BattleRoyaleEquipments
-from gui.Scaleform.genConsts.BATTLE_MARKER_STATES import BATTLE_MARKER_STATES
 SelfBuffInfo = namedtuple('SelfBuffInfo', 'endTime')
 
 class VehicleSelfBuffComponent(BigWorld.DynamicScriptComponent):
@@ -35,7 +34,6 @@ class VehicleSelfBuffComponent(BigWorld.DynamicScriptComponent):
     def __updateState(self, inspireArgs):
         if self.entity.id == BigWorld.player().getObservedVehicleID():
             self.entity.guiSessionProvider.invalidateVehicleState(VEHICLE_VIEW_STATE.INSPIRE, inspireArgs)
-            self.__updateMarker(0.0)
         else:
             ctrl = self.entity.guiSessionProvider.shared.feedback
             if ctrl is not None:
@@ -48,12 +46,3 @@ class VehicleSelfBuffComponent(BigWorld.DynamicScriptComponent):
          'isInactivation': duration > 0,
          'isSourceVehicle': True,
          'duration': duration}
-
-    def __updateMarker(self, elapsedTime):
-        feedback = self.entity.guiSessionProvider.shared.feedback
-        data = {'isShown': bool(elapsedTime),
-         'isSourceVehicle': False,
-         'duration': elapsedTime,
-         'animated': True,
-         'markerID': BATTLE_MARKER_STATES.INSPIRING_STATE}
-        feedback.onVehicleFeedbackReceived(FEEDBACK_EVENT_ID.VEHICLE_CUSTOM_MARKER, self.entity.id, data)

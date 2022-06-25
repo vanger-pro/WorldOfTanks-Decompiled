@@ -4,7 +4,7 @@ import logging
 import random
 from math import ceil
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
-from constants import DEATH_REASON_ALIVE, PREMIUM_TYPE, ARENA_BONUS_TYPE, ARENA_GUI_TYPE, ATTACK_REASON_INDICES, ATTACK_REASON
+from constants import DEATH_REASON_ALIVE, PREMIUM_TYPE, ARENA_BONUS_TYPE, ARENA_GUI_TYPE
 import BigWorld
 from gui import GUI_SETTINGS
 from gui.Scaleform.genConsts.BATTLE_RESULTS_PREMIUM_STATES import BATTLE_RESULTS_PREMIUM_STATES
@@ -30,7 +30,6 @@ from skeletons.gui.shared import IItemsCache
 _UNDEFINED_EFFICIENCY_VALUE = '-'
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
-NO_OWNER_DEATH_REASON_IDS = (ATTACK_REASON_INDICES[ATTACK_REASON.FORT_ARTILLERY_EQ],)
 
 class PremiumAccountFlag(base.StatsItem):
     __slots__ = ()
@@ -254,7 +253,7 @@ class EpicVehicleNamesBlock(PersonalVehicleNamesBlock):
 
 
 class PersonalVehicleBlock(base.StatsBlock):
-    __slots__ = ('isVehicleStatusDefined', 'vehicleIcon', 'vehicleLevel', 'nationName', 'killerID', 'vehicleState', 'vehicleStatePrefix', 'vehicleStateSuffix', 'isPrematureLeave', 'isKilledByTeamKiller', 'deathReason')
+    __slots__ = ('isVehicleStatusDefined', 'vehicleIcon', 'vehicleLevel', 'nationName', 'killerID', 'vehicleState', 'vehicleStatePrefix', 'vehicleStateSuffix', 'isPrematureLeave', 'isKilledByTeamKiller')
 
     def setVehicle(self, item):
         if item is not None:
@@ -270,18 +269,14 @@ class PersonalVehicleBlock(base.StatsBlock):
         killerID = result.get('killerID', 0)
         deathReason = result.get('deathReason', DEATH_REASON_ALIVE)
         self.killerID = killerID
-        self.deathReason = deathReason
         if reusable.personal.avatar.isPrematureLeave:
             self.isPrematureLeave = True
-            self.vehicleState = backport.text(R.strings.battle_results.common.vehicleState.prematureLeave())
+            self.vehicleState = i18n.makeString(BATTLE_RESULTS.COMMON_VEHICLESTATE_PREMATURELEAVE)
         elif deathReason > DEATH_REASON_ALIVE:
             if self.isVehicleStatusDefined and killerID:
                 fillKillerInfoBlock(self, deathReason, killerID, reusable)
-            elif self.isVehicleStatusDefined and deathReason in NO_OWNER_DEATH_REASON_IDS:
-                state = backport.text(R.strings.battle_results.common.vehicleState.dyn('dead{}'.format(deathReason), R.invalid)())
-                self.vehicleState = state
         else:
-            self.vehicleState = backport.text(R.strings.battle_results.common.vehicleState.alive())
+            self.vehicleState = i18n.makeString(BATTLE_RESULTS.COMMON_VEHICLESTATE_ALIVE)
 
     def _getVehicleIcon(self, item):
         return getNationLessName(item.name)

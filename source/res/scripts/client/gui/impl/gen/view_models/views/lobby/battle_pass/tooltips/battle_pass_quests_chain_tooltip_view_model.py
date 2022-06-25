@@ -14,10 +14,6 @@ class BattlePassQuestsChainTooltipViewModel(ViewModel):
     def rewards(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getRewardsType():
-        return KeyValueModel
-
     def _initialize(self):
         super(BattlePassQuestsChainTooltipViewModel, self)._initialize()
         self._addViewModelProperty('rewards', UserListModel())

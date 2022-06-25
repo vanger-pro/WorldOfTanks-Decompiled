@@ -1,8 +1,6 @@
 # Python bytecode 2.7 (decompiled from Python 2.7)
 # Embedded file name: scripts/client/skeletons/gui/goodies.py
-from typing import TYPE_CHECKING, Optional, Dict
-if TYPE_CHECKING:
-    from gui.goodies.goodie_items import RecertificationForm, DemountKit
+
 
 class IGoodiesCache(object):
 
@@ -40,9 +38,6 @@ class IGoodiesCache(object):
     def getDemountKit(self, demountKitID=None, currency=None):
         raise NotImplementedError
 
-    def getGoodie(self, goodieID):
-        raise NotImplementedError
-
     def getGoodieByID(self, goodieID):
         raise NotImplementedError
 
@@ -56,10 +51,4 @@ class IGoodiesCache(object):
         raise NotImplementedError
 
     def getClanReserves(self):
-        raise NotImplementedError
-
-    def getRecertificationForm(self, recertificationFormID=None, currency=None):
-        raise NotImplementedError
-
-    def getRecertificationForms(self, criteria=None):
         raise NotImplementedError

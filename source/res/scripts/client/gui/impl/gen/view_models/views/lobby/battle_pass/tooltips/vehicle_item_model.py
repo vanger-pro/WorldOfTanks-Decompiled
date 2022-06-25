@@ -5,7 +5,7 @@ from frameworks.wulf import ViewModel
 class VehicleItemModel(ViewModel):
     __slots__ = ()
 
-    def __init__(self, properties=7, commands=0):
+    def __init__(self, properties=6, commands=0):
         super(VehicleItemModel, self).__init__(properties=properties, commands=commands)
 
     def getVehicleType(self):
@@ -44,12 +44,6 @@ class VehicleItemModel(ViewModel):
     def setTextResource(self, value):
         self._setString(5, value)
 
-    def getIsElite(self):
-        return self._getBool(6)
-
-    def setIsElite(self, value):
-        self._setBool(6, value)
-
     def _initialize(self):
         super(VehicleItemModel, self)._initialize()
         self._addStringProperty('vehicleType', '')
@@ -58,4 +52,3 @@ class VehicleItemModel(ViewModel):
         self._addNumberProperty('vehicleBonus', 0)
         self._addNumberProperty('vehicleTop', 0)
         self._addStringProperty('textResource', '')
-        self._addBoolProperty('isElite', False)

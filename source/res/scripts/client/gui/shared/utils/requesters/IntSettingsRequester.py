@@ -3,7 +3,7 @@
 import logging
 from functools import wraps
 from copy import copy
-from account_helpers.AccountSettings import MAPBOX_CAROUSEL_FILTER_1, MAPBOX_CAROUSEL_FILTER_2, FUN_RANDOM_CAROUSEL_FILTER_1, FUN_RANDOM_CAROUSEL_FILTER_2
+from account_helpers.AccountSettings import MAPBOX_CAROUSEL_FILTER_1, MAPBOX_CAROUSEL_FILTER_2
 import BigWorld
 import constants
 from adisp import async, process
@@ -80,8 +80,7 @@ class IntSettingsRequester(object):
      MAPBOX_CAROUSEL_FILTER_1: 103,
      MAPBOX_CAROUSEL_FILTER_2: 104,
      'CONTOUR': constants.USER_SERVER_SETTINGS.CONTOUR,
-     FUN_RANDOM_CAROUSEL_FILTER_1: 107,
-     FUN_RANDOM_CAROUSEL_FILTER_2: 108}
+     'DRAGON_BOAT_STORAGE': constants.USER_SERVER_SETTINGS.DRAGON_BOAT}
 
     def __init__(self):
         self.__isSynced = False

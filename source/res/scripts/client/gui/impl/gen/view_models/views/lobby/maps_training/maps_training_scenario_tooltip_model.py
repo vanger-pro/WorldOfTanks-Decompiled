@@ -40,10 +40,6 @@ class MapsTrainingScenarioTooltipModel(ViewModel):
     def setTargets(self, value):
         self._setArray(4, value)
 
-    @staticmethod
-    def getTargetsType():
-        return str
-
     def getVehicleName(self):
         return self._getString(5)
 
@@ -61,10 +57,6 @@ class MapsTrainingScenarioTooltipModel(ViewModel):
 
     def setRewards(self, value):
         self._setArray(7, value)
-
-    @staticmethod
-    def getRewardsType():
-        return BonusModel
 
     def _initialize(self):
         super(MapsTrainingScenarioTooltipModel, self)._initialize()

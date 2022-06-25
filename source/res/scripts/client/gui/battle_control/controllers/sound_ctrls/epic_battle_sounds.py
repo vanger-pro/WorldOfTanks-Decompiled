@@ -36,25 +36,17 @@ class _EquipmentSoundPlayer(object):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def init(self):
-        equipmentsCtrl = self.__sessionProvider.shared.equipments
-        if equipmentsCtrl is not None:
-            equipmentsCtrl.onEquipmentUpdated += self.__onEquipmentUpdated
-            equipmentsCtrl.onCombatEquipmentUsed += self.__onCombatEquipmentUsed
-        componentSystem = self.__sessionProvider.arenaVisitor.getComponentSystem()
-        playerDataComponent = getattr(componentSystem, 'playerDataComponent', None)
-        if playerDataComponent is not None:
-            playerDataComponent.onPlayerRankUpdated += self.__onPlayerRankUpdated
+        ctrl = self.__sessionProvider.shared.equipments
+        if ctrl is not None:
+            ctrl.onEquipmentUpdated += self.__onEquipmentUpdated
+            ctrl.onCombatEquipmentUsed += self.__onCombatEquipmentUsed
         return
 
     def destroy(self):
-        equipmentsCtrl = self.__sessionProvider.shared.equipments
-        if equipmentsCtrl is not None:
-            equipmentsCtrl.onEquipmentUpdated -= self.__onEquipmentUpdated
-            equipmentsCtrl.onCombatEquipmentUsed -= self.__onCombatEquipmentUsed
-        componentSystem = self.__sessionProvider.arenaVisitor.getComponentSystem()
-        playerDataComponent = getattr(componentSystem, 'playerDataComponent', None)
-        if playerDataComponent is not None:
-            playerDataComponent.onPlayerRankUpdated -= self.__onPlayerRankUpdated
+        ctrl = self.__sessionProvider.shared.equipments
+        if ctrl is not None:
+            ctrl.onEquipmentUpdated -= self.__onEquipmentUpdated
+            ctrl.onCombatEquipmentUsed -= self.__onCombatEquipmentUsed
         return
 
     def __onEquipmentUpdated(self, _, item):
@@ -83,12 +75,6 @@ class _EquipmentSoundPlayer(object):
                 if equipment.wwsoundEquipmentUsed:
                     SoundGroups.g_instance.playSound2D(equipment.wwsoundEquipmentUsed)
         return
-
-    def __onPlayerRankUpdated(self, rank):
-        missionsCtrl = self.__sessionProvider.dynamic.missions
-        firstUnlocked, _ = missionsCtrl.getRankUpdateData(rank)
-        reserveSoundId = EPIC_SOUND.EB_VO_RESERVE_UNLOCKED if firstUnlocked else EPIC_SOUND.EB_VO_RESERVE_UPGRADED
-        EpicBattleSoundController.playSoundNotification(reserveSoundId)
 
 
 class _MineFieldSoundPlayer(BaseEfficiencySoundPlayer):

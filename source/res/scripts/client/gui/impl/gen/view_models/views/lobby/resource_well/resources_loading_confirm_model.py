@@ -21,10 +21,6 @@ class ResourcesLoadingConfirmModel(ViewModel):
     def vehicleCounter(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getVehicleCounterType():
-        return VehicleCounterModel
-
     def getOperationType(self):
         return OperationType(self._getNumber(1))
 
@@ -42,10 +38,6 @@ class ResourcesLoadingConfirmModel(ViewModel):
 
     def setResources(self, value):
         self._setArray(3, value)
-
-    @staticmethod
-    def getResourcesType():
-        return LoadingResourceModel
 
     def _initialize(self):
         super(ResourcesLoadingConfirmModel, self)._initialize()

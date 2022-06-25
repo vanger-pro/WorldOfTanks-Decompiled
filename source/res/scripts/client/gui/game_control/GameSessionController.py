@@ -2,30 +2,20 @@
 # Embedded file name: scripts/client/gui/game_control/GameSessionController.py
 import sys
 import time
-import typing
 import BigWorld
 import Event
 import account_shared
 import constants
 from constants import SECONDS_IN_DAY
 from debug_utils import LOG_DEBUG
-from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.SystemMessages import SM_TYPE
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.prb_control import prbEntityProperty
-from gui.prb_control.entities.listener import IGlobalListener
-from gui.shared.formatters import text_styles
-from gui.shared.notifications import NotificationPriorityLevel
-from gui.shared.utils.scheduled_notifications import Notifiable, PeriodicNotifier, SimpleNotifier, AcyclicNotifier
+from gui.shared.utils.scheduled_notifications import Notifiable, PeriodicNotifier, SimpleNotifier
 from helpers import dependency
 from helpers import time_utils
 from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-if typing.TYPE_CHECKING:
-    from skeletons.gui.shared.utils.requesters import IGameRestrictionsRequester
 _BAN_RESTR = constants.RESTRICTION_TYPE.BAN
 
 def _checkForNegative(t):
@@ -53,10 +43,10 @@ def _getSvrLocal():
 
 
 def _getSevUtc():
-    return time_utils.getServerUTCTime()
+    return time_utils._g_instance.serverUTCTime
 
 
-class GameSessionController(IGameSessionController, IGlobalListener, Notifiable):
+class GameSessionController(IGameSessionController, Notifiable):
     NOTIFY_PERIOD = time_utils.ONE_HOUR
     TIME_RESERVE = 59
     PLAY_TIME_LEFT_NOTIFY = time_utils.QUARTER_HOUR + TIME_RESERVE
@@ -66,13 +56,11 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
     onNewDayNotify = Event.Event()
     onPremiumNotify = Event.Event()
     onPremiumTypeChanged = Event.Event()
-    onParentControlNotify = Event.Event()
     itemsCache = dependency.descriptor(IItemsCache)
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def init(self):
-        self.__timeTillKickNotifier = AcyclicNotifier(self.__getClosestTimeTillKickNotification, self.__notifyTimeTillKick)
-        self.addNotificators(PeriodicNotifier(self.__getClosestPremiumNotification, self.__notifyPremiumTime), SimpleNotifier(self.__getClosestSessionTimeNotification, self.__notifyClient), PeriodicNotifier(self.__getClosestNewDayNotification, self.__notifyNewDay), self.__timeTillKickNotifier)
+        self.addNotificators(PeriodicNotifier(self.__getClosestPremiumNotification, self.__notifyPremiumTime), SimpleNotifier(self.__getClosestSessionTimeNotification, self.__notifyClient), PeriodicNotifier(self.__getClosestNewDayNotification, self.__notifyNewDay))
         self.__sessionStartedAt = -1
         self.__banCallback = None
         self.__lastBanMsg = None
@@ -91,18 +79,12 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         self.onTimeTillBan.clear()
         self.onNewDayNotify.clear()
         self.onPremiumNotify.clear()
-        self.onParentControlNotify.clear()
         self.clearNotification()
-        if self.__timeTillKickNotifier is not None:
-            self.__timeTillKickNotifier = None
         super(GameSessionController, self).fini()
-        return
 
     def onLobbyStarted(self, ctx):
         self.__sessionStartedAt = ctx.get('aogasStartedAt', -1)
         LOG_DEBUG('GameSessionController::start', self.__sessionStartedAt)
-
-    def onLobbyInited(self, event):
         if self.__lastNotifyTime is None:
             self.__lastNotifyTime = time_utils.getCurrentTimestamp()
         self.__curfewBlockTime, self.__curfewUnblockTime = self.__getCurfewBlockTime(self._stats.restrictions)
@@ -112,10 +94,7 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         self.__loadBanCallback()
         g_clientUpdateManager.addCallbacks({'premium': self.__onAccountChanged,
          'stats.restrictions': self.__onRestrictionsChanged,
-         'stats.playLimits': self.__onPlayLimitsChanged,
-         'cache.gameRestrictions.session': self.__onParentControlChanged,
-         'cache.gameRestrictions.session_r': self.__onParentControlChanged})
-        self.startGlobalListening()
+         'stats.playLimits': self.__onPlayLimitsChanged})
         return
 
     def onAvatarBecomePlayer(self):
@@ -146,13 +125,11 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
     @property
     def isParentControlActive(self):
         playTimeLeft = min([self.getDailyPlayTimeLeft(), self.getWeeklyPlayTimeLeft()])
-        playTimeForBattle = self.getPlayTimeNotify()
-        parentControl = self.isParentControlEnabled and playTimeLeft <= playTimeForBattle
+        parentControl = self.isParentControlEnabled and playTimeLeft <= self.getPlayTimeNotify()
         _, _ = self.getCurfewBlockTime()
         banTimeLeft = min(*self.__getBlockTimeLeft())
-        curfewControl = self.__curfewBlockTime is not None and banTimeLeft <= playTimeForBattle
-        gameRestrictions = self._gameRestrictions.hasSessionLimit and self._gameRestrictions.getKickAt() - _getSevUtc() <= playTimeForBattle
-        return parentControl or curfewControl or gameRestrictions
+        curfewControl = self.__curfewBlockTime is not None and banTimeLeft <= self.getPlayTimeNotify()
+        return parentControl or curfewControl
 
     @prbEntityProperty
     def prbEntity(self):
@@ -179,16 +156,11 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         playTimeLeft, curfewTimeLeft = self.__getBlockTimeLeft()
         return playTimeLeft < curfewTimeLeft
 
-    def onPrbEntitySwitched(self):
-        if self.__timeTillKickNotifier is not None:
-            self.__timeTillKickNotifier.startNotification()
-        return
-
     def incBattlesCounter(self):
         self.__battles += 1
 
     def getPlayTimeNotify(self):
-        return self.TIME_LEFT_NOTIFY_FROM_EPIC if self.prbEntity and self.prbEntity.getQueueType() == constants.QUEUE_TYPE.EPIC else self.PLAY_TIME_LEFT_NOTIFY
+        return self.TIME_LEFT_NOTIFY_FROM_EPIC if self.prbEntity.getQueueType() == constants.QUEUE_TYPE.EPIC else self.PLAY_TIME_LEFT_NOTIFY
 
     def getCurfewBlockTime(self):
         if self.__curfewBlockTime is not None:
@@ -217,10 +189,6 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
     def _stats(self):
         return self.itemsCache.items.stats
 
-    @property
-    def _gameRestrictions(self):
-        return self.itemsCache.items.gameRestrictions
-
     def _stop(self, doNotifyInStart=False):
         LOG_DEBUG('GameSessionController::stop')
         self.stopNotification()
@@ -229,7 +197,6 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         self.__sessionStartedAt = -1
         self.__doNotifyInStart = doNotifyInStart
         self.__clearBanCallback()
-        self.stopGlobalListening()
         g_clientUpdateManager.removeObjectCallbacks(self)
         return
 
@@ -262,13 +229,6 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
             delay -= timeSinceLastNotify
             if delay <= 0:
                 delay = 1
-        return delay
-
-    def __getClosestTimeTillKickNotification(self):
-        delay = 0
-        if self._gameRestrictions.getKickAt():
-            playTimeForBattle = self.getPlayTimeNotify()
-            delay = max(self._gameRestrictions.getKickAt() - _getSevUtc() - playTimeForBattle, 1)
         return delay
 
     def __getBlockTimeLeft(self):
@@ -312,19 +272,6 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         stats = self._stats
         self.onPremiumNotify(stats.isPremium, stats.attributes, stats.activePremiumExpiryTime)
 
-    def __notifyTimeTillKick(self):
-        messageText = backport.text(R.strings.system_messages.gameSessionControl.parentControl.kickTime(), kickTime=backport.getShortTimeFormat(self._gameRestrictions.getKickAt()))
-        SystemMessages.pushMessage(messageText, SM_TYPE.Warning, NotificationPriorityLevel.HIGH)
-
-    def __notifyParentControlChanged(self, timeLimit):
-        msgList = [backport.text(R.strings.system_messages.gameSessionControl.parentControl.settingsChanged())]
-        if timeLimit:
-            msgList.append(backport.text(R.strings.system_messages.gameSessionControl.parentControl.timeLimit(), timeLimit=backport.getDateTimeFormat(timeLimit)))
-        else:
-            msgList.append(backport.text(R.strings.system_messages.gameSessionControl.parentControl.noTimeLimit()))
-        messageText = text_styles.concatStylesToMultiLine(*msgList)
-        SystemMessages.pushMessage(messageText, SM_TYPE.Warning, NotificationPriorityLevel.HIGH)
-
     def __onBanNotifyHandler(self):
         LOG_DEBUG('GameSessionController:__onBanNotifyHandler')
         playTimeLeft = min([self.getDailyPlayTimeLeft(), self.getWeeklyPlayTimeLeft()])
@@ -351,17 +298,6 @@ class GameSessionController(IGameSessionController, IGlobalListener, Notifiable)
         self.__lastBanMsg = None
         self.__loadBanCallback()
         return
-
-    def __onParentControlChanged(self, diff):
-        if diff and 'kick_at' not in diff:
-            return
-        if not diff:
-            timeLimit = 0
-        else:
-            timeLimit = self._gameRestrictions.getKickAt()
-        self.onParentControlNotify()
-        self.__notifyParentControlChanged(timeLimit)
-        self.__timeTillKickNotifier.startNotification()
 
     @classmethod
     def __getCurfewBlockTime(cls, restrictions):

@@ -89,7 +89,7 @@ class FakeDataAccessor(base.BaseDataAccessor):
         self.user_agent = user_agent
         return
 
-    def login(self, callback, account_id, spa_token, jwt):
+    def login(self, callback, account_id, spa_token):
         self.account = account_id
         self._account = self.requests_before_logout
         access_token = ''.join((random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))

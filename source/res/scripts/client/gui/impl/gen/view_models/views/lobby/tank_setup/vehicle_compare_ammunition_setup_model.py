@@ -14,17 +14,9 @@ class VehicleCompareAmmunitionSetupModel(ViewModel):
     def tankSetup(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getTankSetupType():
-        return MainTankSetupModel
-
     @property
     def vehicleInfo(self):
         return self._getViewModel(1)
-
-    @staticmethod
-    def getVehicleInfoType():
-        return VehicleInfoModel
 
     def getShow(self):
         return self._getBool(2)

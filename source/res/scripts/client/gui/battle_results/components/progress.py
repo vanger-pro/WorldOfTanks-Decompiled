@@ -255,66 +255,58 @@ class BattlePassProgressBlock(base.StatsBlock):
     __battlePassController = dependency.descriptor(IBattlePassController)
 
     def setRecord(self, result, reusable):
-        bpp = reusable.battlePassProgress
-        if not bpp.hasProgress:
-            return
-        for lvl in xrange(bpp.prevLevel, bpp.currLevel):
-            self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgress(bpp, lvl)))
-
-        if bpp.pointsAux or bpp.pointsNew and bpp.pointsMax != bpp.pointsNew:
-            self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgress(bpp, bpp.currLevel)))
+        if reusable.battlePassProgress.hasProgress:
+            self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgress(reusable.battlePassProgress)))
+            if reusable.battlePassProgress.isLevelReached:
+                self.addComponent(self.getNextComponentIndex(), base.DirectStatsItem(*self.__formatBattlePassProgress(reusable.battlePassProgress, True)))
 
     @classmethod
-    def __formatBattlePassProgress(cls, progress, level):
-        return ('', {'awards': cls.__makeProgressAwards(progress, level),
-          'questInfo': cls.__makeProgressQuestInfo(progress, level),
+    def __formatBattlePassProgress(cls, progress, isExtraBlock=False):
+        return ('', {'awards': cls.__makeProgressAwards(progress, isExtraBlock),
+          'questInfo': cls.__makeProgressQuestInfo(progress, isExtraBlock),
           'questType': EVENT_TYPE.BATTLE_QUEST,
-          'progressList': cls.__makeProgressList(progress, level),
+          'progressList': cls.__makeProgressList(progress, isExtraBlock),
           'questState': {'statusState': cls.__getMissionState(progress.isDone)},
           'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()),
           'linkBtnEnabled': progress.isApplied})
 
     @staticmethod
-    def __makeProgressAwards(progress, level):
-        nothing = []
-        if level >= progress.currLevel:
-            return nothing
-        awards = progress.getLevelAwards(level + 1)
-        if not awards:
-            return nothing
-        awardsList = QuestsBonusComposer(BattlePassTextBonusesPacker()).getPreformattedBonuses(awards)
+    def __makeProgressAwards(progress, isExtraBlock):
+        if progress.awards and not isExtraBlock:
+            awardsList = QuestsBonusComposer(BattlePassTextBonusesPacker()).getPreformattedBonuses(progress.awards)
 
-        def makeUnavailableBlockData():
-            return formatters.packTextBlock(text_styles.alert(backport.text(R.strings.quests.bonuses.notAvailable())))
+            def makeUnavailableBlockData():
+                return formatters.packTextBlock(text_styles.alert(backport.text(R.strings.quests.bonuses.notAvailable())))
 
-        if awardsList:
-            return [ award.getDict() for award in awardsList ]
-        return [makeUnavailableBlockData().getDict()]
+            if awardsList:
+                return [ award.getDict() for award in awardsList ]
+            return [makeUnavailableBlockData().getDict()]
+        return []
 
     @classmethod
-    def __makeProgressQuestInfo(cls, progress, level):
-        isFreePoints = progress.pointsAux and not progress.isLevelMax or progress.isLevelMax and level == progress.currLevel
+    def __makeProgressQuestInfo(cls, progress, isExtraBlock):
+        isFreePoints = progress.pointsAux and not progress.isLevelMax or progress.isLevelMax and isExtraBlock
         chapterID = progress.chapterID
-        return {'status': cls.__getMissionState(isDone=level < progress.currLevel),
+        return {'status': cls.__getMissionState(progress.isDone and not isExtraBlock),
          'questID': BattlePassConsts.FAKE_QUEST_ID,
          'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST,
          'eventType': EVENT_TYPE.BATTLE_QUEST,
          'maxProgrVal': progress.pointsMax,
          'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL,
-         'description': backport.text(_POST_BATTLE_RES.title.free() if isFreePoints else _POST_BATTLE_RES.title(), level=level + 1, chapter=cls.__getChapterName(chapterID)),
+         'description': backport.text(_POST_BATTLE_RES.title.free() if isFreePoints else _POST_BATTLE_RES.title(), level=progress.level if not isExtraBlock else progress.level + 1, chapter=cls.__getChapterName(chapterID)),
          'currentProgrVal': progress.pointsNew,
          'tasksCount': -1,
          'progrBarType': cls.__getProgressBarType(not progress.isDone),
          'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
 
     @classmethod
-    def __makeProgressList(cls, progress, level):
+    def __makeProgressList(cls, progress, isExtraBlock):
         return [{'description': backport.text(_POST_BATTLE_RES.progress()),
           'maxProgrVal': progress.pointsMax,
           'progressDiff': '+ {}'.format(progress.pointsAdd),
           'progressDiffTooltip': backport.text(_POST_BATTLE_RES.progress.tooltip(), points=progress.pointsAdd),
           'currentProgrVal': progress.pointsNew,
-          'progrBarType': cls.__getProgressBarType(not progress.pointsAux)}] if not progress.isDone or progress.pointsAux and not progress.isLevelMax or level == progress.currLevel else []
+          'progrBarType': cls.__getProgressBarType(not progress.pointsAux)}] if not progress.isDone or progress.pointsAux and not progress.isLevelMax or isExtraBlock else []
 
     @classmethod
     def __getChapterName(cls, chapterID):

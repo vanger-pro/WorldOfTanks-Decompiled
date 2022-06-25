@@ -173,10 +173,8 @@ if IS_DEVELOPMENT:
         def load(self, planNames, autoStart=False):
             super(CallablePlanProvider, self).load(planNames, autoStart)
             if self._name in self.plansOnLoad:
-                for entry in self.plansOnLoad[self._name]:
-                    if isinstance(entry, dict):
-                        self._loadPlan(entry['name'], dict(entry['params']), autoStart)
-                    self._loadPlan(entry, {}, autoStart)
+                for planName in self.plansOnLoad[self._name]:
+                    self._loadPlan(planName, {}, autoStart)
 
 
     def setPlansOnLoad(name, planNames):

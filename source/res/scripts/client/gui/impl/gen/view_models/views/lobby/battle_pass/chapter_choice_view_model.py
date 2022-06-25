@@ -16,10 +16,6 @@ class ChapterChoiceViewModel(ViewModel):
     def setChapters(self, value):
         self._setArray(0, value)
 
-    @staticmethod
-    def getChaptersType():
-        return ChapterModel
-
     def getBpbitCount(self):
         return self._getNumber(1)
 

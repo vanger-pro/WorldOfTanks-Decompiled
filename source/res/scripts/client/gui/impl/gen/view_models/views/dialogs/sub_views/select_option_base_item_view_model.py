@@ -21,10 +21,6 @@ class SelectOptionBaseItemViewModel(ViewModel):
     def tooltip(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getTooltipType():
-        return DialogTemplateGenericTooltipViewModel
-
     def getComponentType(self):
         return ComponentType(self._getString(1))
 

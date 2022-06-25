@@ -40,10 +40,6 @@ class MapsTrainingScenarioModel(ViewModel):
     def setRewards(self, value):
         self._setArray(4, value)
 
-    @staticmethod
-    def getRewardsType():
-        return BonusModel
-
     def _initialize(self):
         super(MapsTrainingScenarioModel, self)._initialize()
         self._addNumberProperty('team', 0)

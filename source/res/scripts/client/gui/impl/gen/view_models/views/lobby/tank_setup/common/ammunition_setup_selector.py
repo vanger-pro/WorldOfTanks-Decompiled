@@ -33,10 +33,6 @@ class AmmunitionSetupSelector(ViewModel):
     def setStates(self, value):
         self._setArray(2, value)
 
-    @staticmethod
-    def getStatesType():
-        return int
-
     def _initialize(self):
         super(AmmunitionSetupSelector, self)._initialize()
         self._addBoolProperty('isSwitchEnabled', False)

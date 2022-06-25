@@ -22,10 +22,6 @@ class ModificationModel(BaseModificationModel):
     def price(self):
         return self._getViewModel(4)
 
-    @staticmethod
-    def getPriceType():
-        return PriceModel
-
     def getRoleCategory(self):
         return RoleCategory(self._getString(5))
 

@@ -14,10 +14,6 @@ class OfferModel(ViewModel):
     def gifts(self):
         return self._getViewModel(0)
 
-    @staticmethod
-    def getGiftsType():
-        return GiftModel
-
     def getId(self):
         return self._getNumber(1)
 
